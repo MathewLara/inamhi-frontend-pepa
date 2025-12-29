@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http'; // <--- AGREGADO: HttpHeaders
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -24,5 +24,19 @@ export class ArchivoService {
     formData.append('id_usuario', idUsuario);
 
     return this.http.post(`${this.apiUrl}/upload`, formData);
+  }
+
+  // --- ESTA ES LA FUNCIÓN NUEVA QUE NECESITAS ---
+  eliminarArchivo(id: number): Observable<any> {
+  const token = localStorage.getItem('token'); // OJO: Asegúrate que este nombre es el correcto (Paso 1)
+  
+  // --- AGREGA ESTO PARA DEPURAR ---
+  console.log("INTENTANDO BORRAR:");
+  console.log("ID:", id);
+  console.log("TOKEN RECUPERADO:", token); 
+  // --------------------------------
+
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.http.delete(`${this.apiUrl}/${id}`, { headers: headers });
   }
 }

@@ -44,10 +44,10 @@
                                     🔍
                                 </button>
                                 
-                                <button *ngIf="esAdmin" (click)="editarTdr(item)" style="background: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                                <button *ngIf="esAdmin" (click)="editarTdr(item)" title="Editar TDR" style="background: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
                                     ✏️
                                 </button>
-                                <button *ngIf="esAdmin" (click)="eliminarTdr(item)" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                                <button *ngIf="esAdmin" (click)="eliminarTdr(item)" title="Eliminar TDR" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
                                     🗑️
                                 </button>
                             </div>
@@ -130,7 +130,6 @@
                     <label style="font-weight: bold; font-size: 12px; color: #dc3545;">FECHA FIN (VENCIMIENTO):</label>
                     <input type="date" [(ngModel)]="nuevoTdr.fecha_fin" style="width: 100%; padding: 8px; border: 1px solid #dc3545; border-radius: 4px;">
                 </div>
-                
             </div>
         </div>
 
@@ -189,75 +188,60 @@
 
             <div class="docs-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
                 
-                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; text-align: center; position: relative;">
-                    <i class="fas" [ngClass]="tdrSeleccionado.url_informe_necesidad ? 'fa-check-circle text-success' : 'fa-file-pdf text-danger'" 
-                       style="font-size: 35px; margin-bottom: 10px;"></i>
-                    
-                    <p style="font-weight: bold; margin: 5px 0;">Informe Necesidad</p>
-
-                    <div *ngIf="tdrSeleccionado.url_informe_necesidad" style="margin-bottom: 10px;">
-                        <a [href]="tdrSeleccionado.url_informe_necesidad" target="_blank" class="badge bg-success" style="text-decoration: none; cursor: pointer; padding: 8px 12px;">
-                            👁️ Ver Documento
-                        </a>
-                    </div>
-
-                    <button (click)="triggerUpload('necesidad')" class="btn btn-sm" 
-                            [ngClass]="tdrSeleccionado.url_informe_necesidad ? 'btn-outline-secondary' : 'btn-primary'" 
-                            style="font-size: 12px;">
-                        {{ tdrSeleccionado.url_informe_necesidad ? '🔄 Reemplazar' : '⬆️ Subir PDF' }}
-                    </button>
-                    
-                    <input type="file" id="file-necesidad" style="display: none;" accept="application/pdf" (change)="onFileSelected($event, 'necesidad')">
-                </div>
-
-                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; text-align: center; position: relative;">
-                    <i class="fas" [ngClass]="tdrSeleccionado.url_documento_tdr ? 'fa-check-circle text-success' : 'fa-file-contract text-primary'" 
-                       style="font-size: 35px; margin-bottom: 10px;"></i>
-                    
-                    <p style="font-weight: bold; margin: 5px 0;">Documento TDR</p>
-
-                    <div *ngIf="tdrSeleccionado.url_documento_tdr" style="margin-bottom: 10px;">
-                        <a [href]="tdrSeleccionado.url_documento_tdr" target="_blank" class="badge bg-success" style="text-decoration: none; cursor: pointer; padding: 8px 12px;">
-                            👁️ Ver Documento
-                        </a>
-                    </div>
-
-                    <button (click)="triggerUpload('tdr')" class="btn btn-sm" 
-                            [ngClass]="tdrSeleccionado.url_documento_tdr ? 'btn-outline-secondary' : 'btn-primary'" 
-                            style="font-size: 12px;">
-                        {{ tdrSeleccionado.url_documento_tdr ? '🔄 Reemplazar' : '⬆️ Subir PDF' }}
-                    </button>
-                    
-                    <input type="file" id="file-tdr" style="display: none;" accept="application/pdf" (change)="onFileSelected($event, 'tdr')">
-                </div>
-
-            </div>
-
-            <div class="docs-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                
                 <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; text-align: center;">
-                    <i class="fas fa-file-pdf" style="font-size: 30px; color: #dc3545; margin-bottom: 10px;"></i>
-                    <p style="font-weight: bold; margin: 5px 0;">Informe Necesidad</p>
-                    
-                    <button (click)="triggerUpload('necesidad')" style="background: #003366; color: white; border: none; padding: 6px 15px; border-radius: 4px; font-size: 12px; cursor: pointer; margin-top: 5px;">
-                        ⬆️ Subir PDF
-                    </button>
+                    <p style="font-weight: bold; margin-bottom: 10px;">Informe Necesidad</p>
+
+                    <div *ngIf="tdrSeleccionado.nombre_archivo_necesidad" class="archivo-cargado">
+                        <i class="fas fa-file-pdf text-danger" style="font-size: 30px; margin-bottom: 5px;"></i>
+                        <br>
+                        <small style="display:block; margin-bottom:10px; word-break: break-all; font-weight: bold;">
+                            {{ tdrSeleccionado.nombre_archivo_necesidad }}
+                        </small>
+                        
+                        <button (click)="descargarArchivo(tdrSeleccionado.ruta_necesidad)" class="btn btn-info btn-sm" style="margin-right: 5px;" title="Ver PDF">
+                            👁️
+                        </button>
+                        
+                        <button *ngIf="esAdmin" (click)="eliminarArchivo(tdrSeleccionado.id_archivo_necesidad)" class="btn btn-danger btn-sm" title="Eliminar">
+                            🗑️
+                        </button>
+                    </div>
+
+                    <div *ngIf="!tdrSeleccionado.nombre_archivo_necesidad">
+                        <button (click)="triggerUpload('necesidad')" class="btn btn-primary btn-sm" style="background: #003366; color: white; border: none; padding: 6px 15px; border-radius: 4px;">
+                            ⬆️ Subir PDF
+                        </button>
+                    </div>
                     <input type="file" id="file-necesidad" style="display: none;" accept="application/pdf" (change)="onFileSelected($event, 'necesidad')">
                 </div>
 
                 <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; text-align: center;">
-                    <i class="fas fa-file-contract" style="font-size: 30px; color: #007bff; margin-bottom: 10px;"></i>
-                    <p style="font-weight: bold; margin: 5px 0;">Documento TDR</p>
-                    
-                    <button (click)="triggerUpload('tdr')" style="background: #003366; color: white; border: none; padding: 6px 15px; border-radius: 4px; font-size: 12px; cursor: pointer; margin-top: 5px;">
-                        ⬆️ Subir PDF
-                    </button>
+                    <p style="font-weight: bold; margin-bottom: 10px;">Documento TDR</p>
+
+                    <div *ngIf="tdrSeleccionado.nombre_archivo_tdr" class="archivo-cargado">
+                        <i class="fas fa-file-contract text-primary" style="font-size: 30px; margin-bottom: 5px;"></i>
+                        <br>
+                        <small style="display:block; margin-bottom:10px; word-break: break-all; font-weight: bold;">
+                            {{ tdrSeleccionado.nombre_archivo_tdr }}
+                        </small>
+                        
+                        <button (click)="descargarArchivo(tdrSeleccionado.ruta_tdr)" class="btn btn-info btn-sm" style="margin-right: 5px;" title="Ver PDF">
+                            👁️
+                        </button>
+                        
+                        <button *ngIf="esAdmin" (click)="eliminarArchivo(tdrSeleccionado.id_archivo_tdr)" class="btn btn-danger btn-sm" title="Eliminar">
+                            🗑️
+                        </button>
+                    </div>
+
+                    <div *ngIf="!tdrSeleccionado.nombre_archivo_tdr">
+                        <button (click)="triggerUpload('tdr')" class="btn btn-primary btn-sm" style="background: #003366; color: white; border: none; padding: 6px 15px; border-radius: 4px;">
+                            ⬆️ Subir PDF
+                        </button>
+                    </div>
                     <input type="file" id="file-tdr" style="display: none;" accept="application/pdf" (change)="onFileSelected($event, 'tdr')">
                 </div>
-
             </div>
-
-        </div>
 
         <div style="background: #eee; padding: 15px; text-align: right;">
             <button (click)="cerrarModalVer()" style="background: #555; color: white; border: none; padding: 8px 25px; border-radius: 4px; cursor: pointer;">Cerrar</button>

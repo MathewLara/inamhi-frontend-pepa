@@ -4,8 +4,9 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TdrService {
-  // ⚠️ Asegúrate que este puerto (3000) sea el correcto de tu backend
   private apiUrl = 'http://localhost:3000/api/tdrs'; 
+  // Esta URL es para borrar archivos (usa tu archivoRoutes)
+  private archivosUrl = 'http://localhost:3000/api/archivos'; 
 
   constructor(private http: HttpClient) { }
 
@@ -17,9 +18,12 @@ export class TdrService {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
 
-  createTdr(data: FormData): Observable<any> {
+  createTdr(data: any): Observable<any> {
     const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    const headers = new HttpHeaders({ 
+      'Content-Type': 'application/json', 
+      'Authorization': `Bearer ${token}` 
+    });
     return this.http.post(this.apiUrl, data, { headers });
   }
 
@@ -38,11 +42,10 @@ export class TdrService {
     return this.http.delete(`${this.apiUrl}/${id}`, { headers });
   }
 
-  // --- ESTA ES LA FUNCIÓN QUE TE FALTABA ---
-  subirArchivoTdr(data: FormData): Observable<any> {
+  // --- FUNCIÓN PARA BORRAR ARCHIVOS (Punto 2.1) ---
+  deleteArchivo(idArchivo: number): Observable<any> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
-    // Ajusta '/subir-archivo' si tu backend usa otra ruta (ej: '/upload')
-    return this.http.post(`${this.apiUrl}/subir-archivo`, data, { headers });
+    return this.http.delete(`${this.archivosUrl}/${idArchivo}`, { headers });
   }
 }
