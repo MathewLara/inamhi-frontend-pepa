@@ -1,0 +1,39 @@
+<div class="login-container">
+  <div class="login-card">
+    
+    <div class="login-header">
+      <img src="/imagenes/logo.png" alt="Logo INAMHI" class="logo-img">
+      
+      <h2>PLATAFORMA INTEGRAL</h2>
+      <p class="subtitle">Gestión de TDRs y Contratos</p>
+    </div>
+
+    <div *ngIf="mensajeError" class="error-box">
+        <span>⚠️</span> {{ mensajeError }}
+    </div>
+
+    <div>
+      <div class="form-group">
+        <label for="usuario">USUARIO INSTITUCIONAL</label>
+        <input type="text" id="usuario" placeholder="Ej: admin"
+               [(ngModel)]="usuario" 
+               (keyup.enter)="ingresar()">
+      </div>
+
+      <div class="form-group">
+        <label for="password">CONTRASEÑA</label>
+        <input type="password" id="password" placeholder="........"
+               [(ngModel)]="password" 
+               (keyup.enter)="ingresar()">
+      </div>
+
+      <button class="btn-primary" (click)="ingresar()">INGRESAR AL SISTEMA</button>
+    </div>
+
+    <div class="login-footer">
+      <p>© 2025 Instituto Nacional de Meteorología e Hidrología</p>
+      <p>Quito - Ecuador</p>
+    </div>
+
+  </div>
+</div>

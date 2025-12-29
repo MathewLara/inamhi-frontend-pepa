@@ -1,0 +1,113 @@
+<div class="main-layout">
+
+    <div *ngIf="mostrarMenu" class="sidebar-container">
+        <div class="sidebar-header">
+            <div class="sidebar-logo-box">
+                <img src="/imagenes/logo.png" alt="Logo INAMHI" class="sidebar-logo-img">
+            </div>
+            <div class="brand-subtitle">Sistema de Gestión TDR</div>
+        </div>
+        
+        <div class="menu-items">
+            <a *ngIf="!esOperativo" routerLink="/dashboard" class="menu-btn" routerLinkActive="active-link">📂 Inicio</a>
+            
+            <a *ngIf="!esOperativo" routerLink="/tdr-lista" class="menu-btn" routerLinkActive="active-link">📄 Gestión de TDR</a>
+            
+            <a routerLink="/contratos" 
+               class="menu-btn" 
+               routerLinkActive="active-link">
+                👥 Contratos Prof.
+            </a>
+
+            <a *ngIf="!esOperativo" routerLink="/mantenimientos" class="menu-btn" routerLinkActive="active-link">🔧 Mantenimientos</a>
+
+            <div *ngIf="esAdmin" class="admin-menu-section">
+                <div class="menu-separator"></div>
+                <p class="menu-category-title">ADMINISTRACIÓN</p>
+                
+                <a routerLink="/usuarios" class="menu-btn admin-btn" routerLinkActive="active-link">
+                   👤 Usuarios
+                </a>
+                
+                <a routerLink="/auditoria" class="menu-btn admin-btn" routerLinkActive="active-link">
+                   📜 Auditoría
+                </a>
+            </div>
+        </div> 
+        
+        <a (click)="logout()" class="menu-btn logout-btn">🚪 Cerrar Sesión</a>
+        <div class="version-text">v1.0.0 - 2025</div>
+    </div>
+
+    <div class="content-container">
+        
+        <div *ngIf="mostrarMenu" class="top-header">
+            <span class="platform-title">PLATAFORMA INTEGRAL</span>
+            
+            <div class="header-actions">
+                <div class="notification-wrapper" (click)="$event.stopPropagation()">
+                    <span (click)="toggleNotificaciones($event)" class="bell-icon">
+                        🔔 <span class="badge">{{ misNotificaciones.length }}</span>
+                    </span>
+                    <div class="dropdown-menu notif-dropdown" *ngIf="mostrarNotificaciones">
+                        <div class="dropdown-header">MIS NOTIFICACIONES</div>
+                        <div *ngFor="let notif of misNotificaciones" (click)="irA(notif.ruta)" class="dropdown-item notif-item">
+                            <div>{{ notif.mensaje }}</div>
+                            <span class="notif-date">{{ notif.fecha }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="user-profile-wrapper" (click)="togglePerfil($event)">
+                    <div class="user-avatar-small">{{ usuario.nombre.charAt(0) }}</div>
+                    <div class="user-info-text">
+                        <div class="user-name">{{ usuario.nombre }}</div>
+                        <div class="user-rol">{{ usuario.rol }}</div>
+                    </div>
+
+                    <div class="dropdown-menu profile-dropdown" *ngIf="mostrarPerfil" (click)="$event.stopPropagation()">
+                        <div class="profile-header-center">
+                            <div class="profile-pic-large">{{ usuario.nombre.charAt(0) }}</div>
+                            <div class="user-name-large">{{ usuario.nombre }}</div>
+                            <div class="user-email">{{ usuario.email }}</div>
+                            <span class="role-badge">{{ usuario.rol }}</span>
+                        </div>
+                        <div class="profile-dept">
+                            <strong>Departamento:</strong><br>{{ usuario.departamento }}
+                        </div>
+                        <button (click)="abrirEdicion()" class="btn-edit-profile">✏️ Editar Perfil</button>
+                        <button (click)="logout()" class="btn-logout-mini">Cerrar Sesión</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="router-outlet-wrapper">
+            <router-outlet></router-outlet>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" *ngIf="mostrarModalEditar" (click)="$event.stopPropagation()">
+        <div class="modal-content">
+            <h3>✏️ Editar Mis Datos</h3>
+            <label>Nombre Completo</label>
+            <input type="text" [(ngModel)]="usuarioTemporal.nombre">
+            <label>Correo Electrónico</label>
+            <input type="text" [(ngModel)]="usuarioTemporal.email">
+            <label>Departamento</label>
+            <select [(ngModel)]="usuarioTemporal.departamento">
+                <option>Tecnología (TICs)</option>
+                <option>Recursos Humanos</option>
+                <option>Dirección Ejecutiva</option>
+                <option>Financiero</option>
+                <option>Hidrología</option>
+            </select>
+            <div class="modal-actions">
+                <button (click)="cerrarEdicion()" class="btn-cancelar">Cancelar</button>
+                <button (click)="guardarCambios()" class="btn-guardar">💾 Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+</div>

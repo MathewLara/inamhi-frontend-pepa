@@ -1,0 +1,50 @@
+<div style="padding: 30px;" class="fade-in">
+    
+    <div style="margin-bottom: 30px;">
+        <h2 style="color: #003366; margin-top: 0; margin-bottom: 5px;">Hola, {{ usuarioNombre }} 👋</h2>
+        <p style="color: #666; margin: 0;">Bienvenido al Sistema de Gestión Integral INAMHI.</p>
+    </div>
+
+    <div style="background-color: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <h3 style="margin-top: 0; color: #333; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 25px;">
+            📊 Resumen General
+        </h3>
+        
+        <div style="display: flex; gap: 25px; flex-wrap: wrap;">
+
+           <div [routerLink]="['/contratos']" class="stat-card" style="cursor: pointer; background: linear-gradient(135deg, #e0f2f1 0%, #80cbc4 100%); padding: 25px; border-radius: 12px; width: 240px; box-shadow: 0 4px 10px rgba(0, 150, 136, 0.15); transition: transform 0.2s;">
+                <div style="font-size: 24px; margin-bottom: 10px;">👥</div>
+                <div style="color: #004d40; font-size: 36px; font-weight: 800;">
+                    {{ totalContratos }}
+                </div>
+                <div style="color: #00695c; font-weight: bold; font-size: 14px; margin-top: 5px;">Contratos Activos</div>
+                <div style="font-size: 11px; color: #004d40; margin-top: 15px; font-weight: 600;">
+                    ➡️ Ver listado completo
+                </div>
+            </div>
+            
+            <div [routerLink]="['/tdr-lista']" class="stat-card" style="cursor: pointer; background: linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%); padding: 25px; border-radius: 12px; width: 240px; box-shadow: 0 4px 10px rgba(255, 152, 0, 0.15); transition: transform 0.2s;">
+                <div style="font-size: 24px; margin-bottom: 10px;">📄</div>
+                <div style="color: #e65100; font-size: 36px; font-weight: 800;">
+                    {{ totalTdrs }}
+                </div>
+                <div style="color: #ef6c00; font-weight: bold; font-size: 14px; margin-top: 5px;">TDRs en Proceso</div>
+                <div style="font-size: 11px; color: #e65100; margin-top: 15px; font-weight: 600;">
+                    ➡️ Gestionar TDRs
+                </div>
+            </div>
+
+            <div [routerLink]="['/mantenimientos']" class="stat-card" style="cursor: pointer; background: linear-gradient(135deg, #e3f2fd 0%, #90caf9 100%); padding: 25px; border-radius: 12px; width: 240px; box-shadow: 0 4px 10px rgba(33, 150, 243, 0.15); transition: transform 0.2s;">
+                <div style="font-size: 24px; margin-bottom: 10px;">🔧</div>
+                <div style="color: #0d47a1; font-size: 36px; font-weight: 800;">
+                    {{ totalMantenimientos }}
+                </div>
+                <div style="color: #1565c0; font-weight: bold; font-size: 14px; margin-top: 5px;">Mantenimientos</div>
+                <div style="font-size: 11px; color: #0d47a1; margin-top: 15px; font-weight: 600;">
+                    ➡️ Reportar Fallos
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

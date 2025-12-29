@@ -1,0 +1,96 @@
+/* Contenedor */
+.page-container {
+    padding: 30px;
+    background-color: transparent;
+}
+
+/* Cabecera */
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+h2 {
+    color: #003366;
+    font-weight: 800;
+    margin: 0;
+    border-left: 5px solid #003366;
+    padding-left: 15px;
+}
+
+/* Botón Nuevo TDR */
+.btn-crear {
+    background-color: #003366;
+    color: white; border: none; padding: 12px 20px; border-radius: 8px;
+    font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    transition: background 0.3s;
+}
+.btn-crear:hover { background-color: #00509e; }
+
+/* Tarjeta Tabla */
+.card-tabla {
+    background: white; border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    padding: 30px; overflow: hidden;
+}
+
+table { width: 100%; border-collapse: collapse; }
+thead { background-color: #174b80; border-bottom: 2px solid #edf2f7; }
+th { text-align: left; padding: 18px; color: #f1f5f9; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; }
+td { padding: 15px 18px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 14px; vertical-align: middle; }
+tbody tr:hover { background-color: #f8fafc; transition: background 0.2s; }
+
+/* Botones Pequeños (Subir Archivo) */
+.btn-upload-mini {
+    background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;
+    padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px; font-weight: 600;
+}
+.btn-upload-mini:hover { background-color: #e2e8f0; color: #1e293b; }
+
+/* Nombre de archivo cargado */
+.archivo-ok { color: #10b981; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+
+/* Badges Estado */
+.badge { padding: 6px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge-publicado { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+.badge-borrador { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+.badge-revision { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
+.badge-cargado { background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+
+/* Botón Ver (Lupa) */
+.btn-ver { background-color: #003366; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0, 51, 102, 0.2); transition: all 0.3s ease; }
+.btn-ver:hover { background-color: #00509e; transform: translateY(-2px); }
+
+/* --- MODALES --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(2px); }
+.modal-content { background: white; width: 450px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: aparecer 0.3s ease-out; }
+.modal-header { background-color: #003366; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+.modal-header h3 { margin: 0; font-size: 16px; }
+.btn-close-x { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
+.modal-body { padding: 25px; }
+.modal-row { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+.modal-label { font-size: 11px; color: #888; font-weight: bold; text-transform: uppercase; }
+.modal-value { font-size: 15px; color: #333; font-weight: 500; margin-top: 2px; }
+.modal-footer { padding: 15px; text-align: right; background-color: #f9fafb; display: flex; gap: 10px; justify-content: flex-end;}
+
+/* Botones Modal */
+.btn-cerrar { background-color: #444; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.btn-guardar { background-color: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.btn-cancelar { background-color: transparent; color: #666; border: 1px solid #ccc; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.btn-pdf { background-color: #dc2626; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;}
+.btn-pdf:hover { background-color: #b91c1c; }
+
+/* Inputs */
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 12px; color: #555; font-weight: bold; margin-bottom: 5px; }
+.input-custom { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; outline: none; transition: border 0.3s; }
+.input-custom:focus { border-color: #003366; background-color: #f0f8ff; }
+
+@keyframes aparecer { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.badge-verde { background-color: #dcfce7; color: #15803d; }
+.badge-rojo { background-color: #fee2e2; color: #991b1b; }
+.badge-azul { background-color: #dbeafe; color: #1e40af; }
+.badge-gris { background-color: #f3f4f6; color: #374151; }

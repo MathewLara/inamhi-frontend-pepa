@@ -1,0 +1,131 @@
+/* FONDO GENERAL (Azul Suave) */
+.login-container {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #e6f7ff 0%, #f0f9ff 100%);
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+
+/* TARJETA (CARD) */
+.login-card {
+    background-color: #ffffff;
+    padding: 45px 50px;
+    border-radius: 16px;
+    width: 380px;
+    box-shadow: 0 20px 60px rgba(0, 51, 102, 0.1); /* Sombra elegante */
+    text-align: center;
+    position: relative;
+    border-top: 5px solid #003366; /* Línea institucional */
+}
+
+/* CABECERA Y LOGO */
+.login-header {
+    margin-bottom: 25px;
+}
+
+.logo-img {
+    width: 160px; /* Tamaño ajustado para que se vea bien */
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.login-header h2 {
+    color: #003366;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.subtitle {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+/* GRUPOS DE FORMULARIO */
+.form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 8px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-sizing: border-box; /* Importante para que no se salga */
+    font-size: 14px;
+    background-color: #f8fafc;
+    transition: all 0.3s ease;
+    color: #334155;
+}
+
+.form-group input:focus {
+    border-color: #003366;
+    background-color: #ffffff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+}
+
+/* BOTÓN PRINCIPAL */
+.btn-primary {
+    width: 100%;
+    background-color: #003366;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 10px;
+    box-shadow: 0 4px 6px rgba(0, 51, 102, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: #002244;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 51, 102, 0.25);
+}
+
+/* PIE DE PÁGINA */
+.login-footer {
+    margin-top: 35px;
+    font-size: 11px;
+    color: #94a3b8;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 20px;
+    line-height: 1.5;
+}
+
+/* MENSAJE DE ERROR */
+.error-box {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    border: 1px solid #fecaca;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+}

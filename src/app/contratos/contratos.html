@@ -1,0 +1,238 @@
+<div class="page-container">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <div>
+            <h2 style="color: #003366; margin: 0;">👥 Contratos Profesionales</h2>
+            <p style="color: #666; margin: 5px 0 0 0;">Gestión de personal técnico y consultores</p>
+        </div>
+        
+        <button class="btn-nuevo" *ngIf="esAdmin" (click)="abrirModalCrear()">
+            ➕ Nuevo Contrato
+        </button>
+    </div>
+
+    <div class="card-table">
+        <div *ngIf="listaContratos.length === 0" style="text-align: center; padding: 40px; color: #888;">
+            <p>⚠️ No hay contratos registrados.</p>
+        </div>
+
+        <table class="table-custom" *ngIf="listaContratos.length > 0">
+            <thead>
+                <tr>
+                    <th>NÚMERO</th>
+                    <th>PROFESIONAL</th>
+                    <th>HONORARIOS</th>
+                    <th>VIGENCIA</th>
+                    <th style="text-align: center;">ESTADO</th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let c of listaContratos">
+                    <td style="font-weight: bold; color: #003366;">{{ c.numero_contrato }}</td>
+                    <td>
+                        <div style="font-weight: bold;">{{ c.nombre_completo_profesional }}</div>
+                        <div style="font-size: 12px; color: #666;">CI: {{ c.cedula_profesional || 'N/A' }}</div>
+                    </td>
+                    <td style="color: #10b981; font-weight: bold;">$ {{ c.honorarios_mensuales }}</td>
+                    <td>
+                        <div style="font-size: 12px;">📅 Del: {{ c.fecha_inicio | date:'dd/MM/yyyy' }}</div>
+                        <div style="font-size: 12px;">📅 Al: {{ c.fecha_fin | date:'dd/MM/yyyy' }}</div>
+                    </td>
+                    
+                    <td style="text-align: center;">
+                        <span style="padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; background: #e8f5e9; color: #2e7d32;" 
+                              *ngIf="(c.estado || 'VIGENTE') === 'VIGENTE'">
+                            VIGENTE
+                        </span>
+                        <span style="padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; background: #ffebee; color: #c62828;" 
+                              *ngIf="(c.estado) === 'FINALIZADO'">
+                            FINALIZADO
+                        </span>
+                    </td>
+
+                    <td class="acciones-cell">
+                        <div style="display: flex; gap: 8px;">
+                            <button (click)="verDetalle(c)" title="Ver Detalles"
+                                    style="background-color: #003366; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer;">
+                                🔍
+                            </button>
+                            
+                            <ng-container *ngIf="esAdmin">
+                                <button (click)="abrirModalEditar(c)" title="Editar"
+                                        style="background-color: #ffca28; color: #333; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer;">
+                                    ✏️
+                                </button>
+
+                                <button (click)="eliminar(c.id_contrato)" title="Eliminar"
+                                        style="background-color: #ffebee; color: #c62828; border: 1px solid #c62828; padding: 6px 10px; border-radius: 6px; cursor: pointer;">
+                                    🗑️
+                                </button>
+                            </ng-container>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal-overlay" *ngIf="mostrarModalCrear" (click)="cerrarModalCrear()">
+    <div class="modal-content" (click)="$event.stopPropagation()" style="max-width: 700px;"> 
+        <div class="modal-header">
+            <h3>{{ esEdicion ? '✏️ Editar Contrato' : '➕ Registrar Nuevo Contrato' }}</h3>
+            <button class="close-btn" (click)="cerrarModalCrear()">×</button>
+        </div>
+        <div class="modal-body">
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Número de Contrato *</label>
+                        <input type="text" class="input-custom" [(ngModel)]="nuevoContrato.numero" placeholder="Ej: CTR-2025-001">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Cédula Profesional *</label>
+                        <input type="text" class="input-custom" [(ngModel)]="nuevoContrato.cedula">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nombre Completo del Profesional *</label>
+                    <input type="text" class="input-custom" [(ngModel)]="nuevoContrato.nombre">
+                </div>
+
+                <div class="form-group">
+                    <label>Objeto del Contrato</label>
+                    <textarea class="input-custom" [(ngModel)]="nuevoContrato.objeto_contrato" rows="2"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Área Solicitante</label>
+                        <select class="input-custom" [(ngModel)]="nuevoContrato.id_direccion_solicitante">
+                            <option value="">-- Seleccione --</option>
+                            <option *ngFor="let dir of listaDirecciones" [value]="dir.id_direccion">{{ dir.nombre_direccion }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Honorarios ($)</label>
+                        <input type="number" class="input-custom" [(ngModel)]="nuevoContrato.honorarios">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Fecha Inicio</label>
+                        <input type="date" class="input-custom" [(ngModel)]="nuevoContrato.inicio">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Fecha Fin</label>
+                        <input type="date" class="input-custom" [(ngModel)]="nuevoContrato.fin">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+            <button (click)="cerrarModalCrear()" style="padding: 10px 20px; background: #eee; border: none; border-radius: 4px; cursor: pointer;">Cancelar</button>
+            <button (click)="guardarContrato()" style="padding: 10px 20px; background: #003366; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                {{ esEdicion ? '💾 Actualizar Cambios' : '💾 Guardar Contrato' }}
+            </button>
+        </div>
+    </div> 
+</div>
+
+<div class="modal-overlay" *ngIf="mostrarModalVer && seleccionado" (click)="cerrarModalVer()">
+    <div class="modal-content" (click)="$event.stopPropagation()" style="max-width: 650px; border-radius: 10px; overflow: hidden;">
+        
+        <div style="background-color: #003366; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 18px;">📄 Detalle del Contrato</h3>
+            <button (click)="cerrarModalVer()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">×</button>
+        </div>
+
+        <div style="padding: 25px; max-height: 75vh; overflow-y: auto;">
+            <div style="text-align: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                <p style="margin: 0; color: #666; font-size: 12px; font-weight: bold; text-transform: uppercase;">Número de Contrato</p>
+                <h2 style="margin: 5px 0; color: #003366;">{{ seleccionado.numero_contrato }}</h2>
+                <span style="background: #e3f2fd; color: #0d47a1; padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: bold;">
+                    {{ seleccionado.estado || 'VIGENTE' }}
+                </span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                <div>
+                    <label style="font-size: 12px; color: #888; font-weight: bold;">PROFESIONAL</label>
+                    <p style="margin: 5px 0; font-weight: bold;">{{ seleccionado.nombre_completo_profesional }}</p>
+                    <p style="margin: 0; font-size: 13px; color: #555;">CI: {{ seleccionado.cedula_profesional || 'N/A' }}</p>
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: #888; font-weight: bold;">HONORARIOS</label>
+                    <p style="margin: 5px 0; font-weight: bold; color: #2e7d32; font-size: 18px;">$ {{ seleccionado.honorarios_mensuales }}</p>
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: #888; font-weight: bold;">VIGENCIA</label>
+                    <p style="margin: 5px 0; font-size: 14px;">📅 Inicio: {{ seleccionado.fecha_inicio | date:'dd/MM/yyyy' }}</p>
+                    <p style="margin: 0; font-size: 14px;">📅 Fin: {{ seleccionado.fecha_fin | date:'dd/MM/yyyy' }}</p>
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: #888; font-weight: bold;">ÁREA / SUPERVISOR</label>
+                    <p style="margin: 5px 0; font-size: 14px;">🏢 {{ seleccionado.nombre_direccion || 'No asignada' }}</p>
+                    <p style="margin: 0; font-size: 13px; font-style: italic; color: #666;">
+                        👮 {{ seleccionado.nombre_supervisor || 'Supervisor no asignado' }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-body-files" style="padding: 20px; border-top: 1px solid #eee; background: #fdfdfd;">
+                <h4 style="color: #003366; margin-bottom: 15px; font-size: 16px;">📁 Expediente Digital (PDF)</h4>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="upload-box" style="background: #f1f4f9; padding: 10px; border-radius: 8px;">
+                        <label style="font-size: 11px; font-weight: bold; color: #555; display: block; margin-bottom: 5px;">
+                            INFORMES MENS/PRODUCTOS
+                        </label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="file" (change)="onFileSelected($event, 'producto')" accept="application/pdf" style="font-size: 10px; flex: 1; max-width: 130px;">
+                            <button (click)="subirDocumento('producto')" 
+                                    style="background: #28a745; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;"
+                                    title="Subir Archivo">
+                                ⬆️
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="upload-box" style="background: #f1f4f9; padding: 10px; border-radius: 8px;">
+                        <label style="font-size: 11px; font-weight: bold; color: #555; display: block; margin-bottom: 5px;">
+                            INFORME TÉCNICO FINAL
+                        </label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="file" (change)="onFileSelected($event, 'informe_final')" accept="application/pdf" style="font-size: 10px; flex: 1; max-width: 130px;">
+                            <button (click)="subirDocumento('informe_final')" 
+                                    style="background: #003366; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;"
+                                    title="Subir Informe Final">
+                                ⬆️
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="seleccionado.archivos?.length > 0" style="margin-top: 15px;">
+                    <p style="font-size: 11px; font-weight: bold; color: #666; margin-bottom: 8px;">DOCUMENTOS VINCULADOS:</p>
+                    <div style="max-height: 100px; overflow-y: auto; background: white; border: 1px solid #eee; padding: 8px; border-radius: 5px;">
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 12px;">
+                            <li *ngFor="let file of seleccionado.archivos" style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f9f9f9;">
+                                <span>📄 {{ file.nombre_archivo }}</span>
+                                <a [href]="file.url" target="_blank" style="color: #003366; font-weight: bold; text-decoration: none;">Ver</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+        <div style="padding: 15px; background: #f4f4f4; text-align: right; border-top: 1px solid #ddd;">
+            <button (click)="cerrarModalVer()" style="background: #6c757d; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer;">
+                Cerrar
+            </button>
+        </div>
+    </div>
+</div>

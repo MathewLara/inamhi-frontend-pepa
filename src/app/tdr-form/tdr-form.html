@@ -1,0 +1,93 @@
+<div class="container mt-4 fade-in">
+    <div class="card shadow-sm border-0" style="max-width: 900px; margin: 0 auto;">
+        
+        <div class="card-body p-5">
+            <h3 class="text-primary fw-bold mb-4" style="border-bottom: 2px solid #eee; padding-bottom: 15px;">
+                📝 Registrar Nuevo TDR
+            </h3>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small">NÚMERO DE TDR:</label>
+                    <input type="text" class="form-control bg-light" [(ngModel)]="nuevoTdr.numero_tdr" placeholder="Ej: TDR-2025-001">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small">TIPO PROCESO:</label>
+                    <select class="form-select" [(ngModel)]="nuevoTdr.tipo_proceso">
+                        <option>Ínfima Cuantía</option>
+                        <option>Catálogo Electrónico</option>
+                        <option>Régimen Especial</option>
+                        <option>Subasta Inversa</option>
+                        <option>Consultoría</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold small">OBJETO DE CONTRATACIÓN:</label>
+                <textarea class="form-control" rows="3" [(ngModel)]="nuevoTdr.objeto_contratacion" placeholder="Descripción detallada del servicio..."></textarea>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small">DIRECCIÓN SOLICITANTE:</label>
+                    <select class="form-select" [(ngModel)]="nuevoTdr.direccion_solicitante" (change)="verificarDireccion()">
+                        <option value="" disabled selected>Seleccione...</option>
+                        <option value="TICs (Tecnología)">TICs (Tecnología)</option>
+                        <option value="Administrativa Financiera">Administrativa Financiera</option>
+                        <option value="Dirección Ejecutiva">Dirección Ejecutiva</option>
+                        <option value="Meteorología">Meteorología</option>
+                        <option value="Hidrología">Hidrología</option>
+                        <option value="Otras">📍 Otras direcciones del INAMHI...</option>
+                    </select>
+                    
+                    <input *ngIf="mostrarOtraDireccion" 
+                           type="text" 
+                           class="form-control mt-2 border-primary" 
+                           [(ngModel)]="otraDireccionTexto" 
+                           placeholder="✍️ Escriba el nombre de la dirección aquí...">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small">PRESUPUESTO ($):</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control" [(ngModel)]="nuevoTdr.presupuesto" placeholder="0.00">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small">RESPONSABLE DESIGNADO:</label>
+                    <input type="text" class="form-control" [(ngModel)]="nuevoTdr.responsable_designado" placeholder="Nombre del funcionario responsable">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small">PERÍODO CONTRATO:</label>
+                    <input type="text" class="form-control" [(ngModel)]="nuevoTdr.periodo_contrato" placeholder="Ej: 1 año, 6 meses">
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small">FECHA INICIO:</label>
+                    <input type="date" class="form-control" [(ngModel)]="nuevoTdr.fecha_inicio">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small text-danger">FECHA FIN (Vencimiento):</label>
+                    <input type="date" class="form-control border-danger" [(ngModel)]="nuevoTdr.fecha_fin">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 border-top pt-4">
+                <button class="btn btn-secondary px-4" (click)="cancelar()">
+                    Cancelar
+                </button>
+                <button class="btn btn-primary px-4 fw-bold" (click)="guardarTdr()">
+                    💾 GUARDAR TDR
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

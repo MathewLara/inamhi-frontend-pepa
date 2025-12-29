@@ -1,0 +1,302 @@
+/* =========================================
+   CONTENEDOR PRINCIPAL
+   ========================================= */
+.page-container {
+    padding: 30px;
+    background-color: #f8f9fa; /* Fondo gris muy suave */
+    min-height: 100vh;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   BOTÓN NUEVO (ESTILO MODERNO)
+   ========================================= */
+.btn-nuevo {
+    background-color: #003366;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 51, 102, 0.2);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-nuevo:hover {
+    background-color: #002244;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 51, 102, 0.3);
+}
+
+/* =========================================
+   TABLA CARD (CARTA FLOTANTE)
+   ========================================= */
+.card-table {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    overflow: hidden; /* Para redondear esquinas */
+    border: 1px solid #eee;
+}
+
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-custom thead {
+    background-color: #003366;
+    color: white;
+}
+
+.table-custom th {
+    padding: 15px 20px;
+    text-align: left;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.table-custom td {
+    padding: 18px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #444;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.table-custom tr:hover {
+    background-color: #f8fbff; /* Azul muy clarito al pasar mouse */
+}
+
+/* Badge de Estado */
+.badge-vigente {
+    background-color: #e6fffa;
+    color: #059669;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid #a7f3d0;
+}
+
+/* =========================================
+   MODAL (AQUÍ ESTÁ LA MAGIA ✨)
+   ========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 30, 60, 0.6); /* Azul oscuro transparente */
+    backdrop-filter: blur(4px); /* Efecto borroso moderno */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centrado vertical */
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 850px; /* MÁS ANCHO PARA QUE QUEPAN LAS COLUMNAS */
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; /* Evita que se salga de la pantalla */
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: scale(0.95) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* CABECERA DEL MODAL */
+.modal-header {
+    padding: 20px 30px;
+    background: linear-gradient(135deg, #003366 0%, #004d99 100%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.close-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.close-btn:hover {
+    background: rgba(255,255,255,0.4);
+}
+
+/* CUERPO DEL MODAL (CON SCROLL) */
+.modal-body {
+    padding: 30px;
+    overflow-y: auto; /* Scroll si es muy alto */
+    background-color: #fff;
+}
+
+/* Scrollbar bonito */
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.modal-body::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+/* INPUTS Y LABELS */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px; /* Espacio entre el input y el siguiente */
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 8px;
+    margin-left: 2px;
+}
+
+.input-custom {
+    padding: 12px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #2d3748;
+    background-color: #f8fafc;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.input-custom:focus {
+    background-color: white;
+    border-color: #3182ce; /* Azul focus */
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15); /* Resplandor azul */
+}
+
+/* FOOTER DEL MODAL */
+.modal-footer {
+    padding: 20px 30px;
+    border-top: 1px solid #eee;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.btn-cancelar {
+    background: white;
+    border: 1px solid #cbd5e0;
+    color: #4a5568;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancelar:hover {
+    background: #edf2f7;
+    color: #2d3748;
+}
+
+.btn-guardar {
+    background: #003366;
+    border: none;
+    color: white;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.btn-guardar:hover {
+    background: #002244;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+/* --- CORRECCIÓN DEL HEADER BLANCO --- */
+/* Esto fuerza a que el encabezado NO cambie de color al pasar el mouse */
+.table-custom thead tr:hover {
+    background-color: #003366 !important; /* Mantiene el azul oscuro */
+    color: white !important;
+}
+
+/* --- NUEVOS ESTILOS PARA ESTADOS AUTOMÁTICOS --- */
+
+/* Estilo para VIGENTE (Verde) */
+.estado-vigente {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #34d399;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+/* Estilo para VENCIDO (Naranja/Rojo) */
+.estado-vencido {
+    background-color: #ffedd5;
+    color: #c2410c;
+    border: 1px solid #fb923c;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+/* Estilo para FINALIZADO MANUALMENTE (Rojo Oscuro) */
+.estado-finalizado {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #f87171;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+}
