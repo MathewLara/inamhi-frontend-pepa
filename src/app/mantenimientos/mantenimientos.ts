@@ -2,189 +2,145 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MantenimientoService } from '../services/mantenimiento.service';
+import { TdrService } from '../services/tdr.service';
 import Swal from 'sweetalert2';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-mantenimientos',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './mantenimientos.html', // Asegúrate que el nombre coincida (html o component.html)
-  styleUrls: ['./mantenimientos.css']   // Asegúrate que el nombre coincida (css o component.css)
+  templateUrl: './mantenimientos.html',
+  styleUrls: ['./mantenimientos.css'] 
 })
 export class MantenimientosComponent implements OnInit {
 
   listaMantenimientos: any[] = [];
+  listaTdrs: any[] = [];
   mostrarModalReporte: boolean = false;
-
-  nuevoReporte = {
+  
+  nuevoReporte: any = {
+    id_tdr: '', // Vinculación
     nombre_equipo: '',
     descripcion_fallo: '',
-    fecha_reporte: new Date().toISOString().split('T')[0], 
+    fecha_reporte: new Date().toISOString().split('T')[0],
     tecnico_sugerido: '',
-    id_usuario_reporta: 0 
+    id_usuario_reporta: 0
   };
 
+  archivoInforme: File | null = null;
   rolUsuario: string = '';
 
   constructor(
-    private mantenimientoService: MantenimientoService,
+    private mantService: MantenimientoService,
+    private tdrService: TdrService,
     private cd: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    // 1. Cargar Usuario
     const usuarioGuardado = localStorage.getItem('usuario');
     if (usuarioGuardado) {
       const usuario = JSON.parse(usuarioGuardado);
-      this.nuevoReporte.id_usuario_reporta = usuario.id_usuario;
-      this.rolUsuario = usuario.rol;
+      this.nuevoReporte.id_usuario_reporta = usuario.id || usuario.id_usuario;
+      this.rolUsuario = usuario.rol || '';
     }
-
-    // 2. Cargar datos
     this.cargarMantenimientos();
+    this.cargarTdrs();
   }
 
   cargarMantenimientos() {
-    this.mantenimientoService.getMantenimientos().subscribe({
-      next: (data: any) => {
-        console.log("📥 Datos recibidos:", data);
-        // Ordenamos por fecha (el más reciente primero)
-        this.listaMantenimientos = (data || []).sort((a: any, b: any) => 
-          new Date(b.fecha_reporte).getTime() - new Date(a.fecha_reporte).getTime()
-        );
-        this.cd.detectChanges();
-      },
-      error: (error: any) => {
-        console.error('🔥 Error al cargar:', error);
-      }
+    this.mantService.getMantenimientos().subscribe(data => {
+      this.listaMantenimientos = data;
+      this.cd.detectChanges();
     });
   }
 
-  // --- NUEVO: LÓGICA PARA EL BOTÓN VER ---
-  verDetalle(item: any) {
-    Swal.fire({
-      title: `🛠️ Soporte: ${item.nombre_equipo || item.equipo || 'Equipo'}`,
-      html: `
-        <div style="text-align: left; font-size: 0.95rem;">
-          <p><strong>📅 Fecha Reporte:</strong> ${item.fecha_reporte ? new Date(item.fecha_reporte).toLocaleDateString() : 'N/A'}</p>
-          <p><strong>⚠️ Fallo:</strong> ${item.descripcion_fallo || item.fallo || 'Sin descripción'}</p>
-          <p><strong>👤 Técnico Sugerido:</strong> ${item.tecnico_sugerido || 'No especificado'}</p>
-          <hr>
-          <p><strong>📊 Estado Actual:</strong> 
-             <span style="color:${this.getColorTexto(item.estado)}; font-weight:bold">
-               ${item.estado || 'PENDIENTE'}
-             </span>
-          </p>
-        </div>
-      `,
-      icon: 'info',
-      confirmButtonText: 'Cerrar',
-      confirmButtonColor: '#003366'
+  cargarTdrs() {
+    this.tdrService.getTdrs().subscribe(data => {
+      this.listaTdrs = data.filter(t => t.estado !== 'FINALIZADO');
     });
   }
 
-  // --- NUEVO: AYUDA VISUAL PARA EL HTML ---
-  // Retorna la clase CSS para el badge (etiqueta) según el estado
-  getBadgeClass(estado: string): string {
-    switch (estado?.toUpperCase()) {
-      case 'FINALIZADO': return 'bg-success';      // Verde
-      case 'EN PROCESO': return 'bg-info text-dark'; // Azul claro
-      default: return 'bg-warning text-dark';      // Amarillo (Pendiente)
-    }
-  }
+  // ==========================================
+  // 🖨️ FUNCIÓN EXPORTAR PDF
+  // ==========================================
+  exportarPDF() {
+    const doc = new jsPDF();
+    doc.setFillColor(0, 51, 102);
+    doc.rect(0, 0, 210, 20, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.text('REPORTE DE MANTENIMIENTOS Y SOPORTES', 14, 13);
 
-  // Auxiliar para el color del texto dentro del SweetAlert
-  private getColorTexto(estado: string): string {
-    switch (estado?.toUpperCase()) {
-      case 'FINALIZADO': return 'green';
-      case 'EN PROCESO': return '#17a2b8';
-      default: return '#ffc107'; // Amarillo oscuro
-    }
-  }
+    const head = [['Equipo', 'Fallo', 'Fecha', 'Técnico', 'Estado']];
+    const data = this.listaMantenimientos.map(m => [
+      m.nombre_equipo,
+      m.descripcion_fallo,
+      new Date(m.fecha_reporte).toLocaleDateString(),
+      m.tecnico_asignado || 'Sin asignar',
+      m.estado
+    ]);
 
-  // --- FUNCIONES DEL MODAL Y REGISTRO ---
+    autoTable(doc, { startY: 30, head: head, body: data, theme: 'striped' });
+    doc.save('Reporte_Mantenimientos.pdf');
+  }
 
   abrirModalReporte() {
+    this.limpiarFormulario();
     this.mostrarModalReporte = true;
   }
+  
+  cerrarModalReporte() { this.mostrarModalReporte = false; }
 
-  cerrarModalReporte() {
-    this.mostrarModalReporte = false;
+  onFileSelected(event: any) {
+    if (event.target.files.length > 0) {
+        this.archivoInforme = event.target.files[0];
+    }
   }
 
-  registrarReporte() {
-    if (!this.nuevoReporte.nombre_equipo || !this.nuevoReporte.descripcion_fallo) {
-      Swal.fire({
-        title: 'Faltan datos',
-        text: 'Por favor completa el nombre del equipo y la descripción.',
-        icon: 'warning',
-        confirmButtonColor: '#003366'
-      });
+  guardarReporte() {
+    if (!this.nuevoReporte.nombre_equipo || !this.nuevoReporte.descripcion_fallo || !this.nuevoReporte.id_tdr) {
+      Swal.fire('Atención', 'Selecciona el TDR y completa los datos del equipo.', 'warning');
       return;
     }
 
-    // Asegurar ID de usuario
-    if (this.nuevoReporte.id_usuario_reporta === 0) {
-        const usuarioGuardado = localStorage.getItem('usuario');
-        if (usuarioGuardado) {
-            this.nuevoReporte.id_usuario_reporta = JSON.parse(usuarioGuardado).id_usuario;
+    this.mantService.createMantenimiento(this.nuevoReporte).subscribe({
+      next: (res: any) => {
+        // Subir archivo si existe
+        if (this.archivoInforme && res.id_mantenimiento) {
+            this.mantService.subirInforme(res.id_mantenimiento, this.archivoInforme).subscribe({
+                next: () => {
+                    Swal.fire('Éxito', 'Reporte e informe guardados', 'success');
+                    this.cerrarModalReporte();
+                    this.cargarMantenimientos();
+                },
+                error: () => Swal.fire('Aviso', 'Reporte creado, pero falló la subida del PDF', 'warning')
+            });
         } else {
-            this.nuevoReporte.id_usuario_reporta = 1; 
+            Swal.fire('Éxito', 'Reporte creado correctamente', 'success');
+            this.cerrarModalReporte();
+            this.cargarMantenimientos();
         }
-    }
-
-    this.mantenimientoService.createMantenimiento(this.nuevoReporte).subscribe({
-      next: (resp: any) => {
-        Swal.fire('¡Reporte Enviado!', 'Se ha registrado correctamente.', 'success');
-        this.cerrarModalReporte();
-        this.cargarMantenimientos();
-        this.limpiarFormulario();
       },
-      error: (error: any) => {
-        console.error('Error al guardar:', error);
-        Swal.fire('Error', 'No se pudo guardar.', 'error');
-      }
+      error: () => Swal.fire('Error', 'No se pudo crear el reporte', 'error')
     });
   }
 
   limpiarFormulario() {
     this.nuevoReporte = {
+      id_tdr: '',
       nombre_equipo: '',
       descripcion_fallo: '',
       fecha_reporte: new Date().toISOString().split('T')[0],
       tecnico_sugerido: '',
       id_usuario_reporta: this.nuevoReporte.id_usuario_reporta
     };
+    this.archivoInforme = null;
   }
 
   cambiarEstado(mantenimiento: any, nuevoEstado: string) {
-    Swal.fire({
-      title: '¿Actualizar estado?',
-      text: `Pasará a: ${nuevoEstado}`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#003366',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, actualizar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.mantenimientoService.updateEstado(mantenimiento.id_mantenimiento, nuevoEstado).subscribe({
-          next: () => {
-            this.cargarMantenimientos();
-            const Toast = Swal.mixin({
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false,
-              timer: 3000
-            });
-            Toast.fire({ icon: 'success', title: 'Estado actualizado' });
-          },
-          error: (error: any) => {
-             console.error(error);
-             Swal.fire('Error', 'No se pudo actualizar el estado', 'error');
-          }
-        });
-      }
-    });
+      this.mantService.updateEstado(mantenimiento.id_mantenimiento, nuevoEstado).subscribe(() => {
+          this.cargarMantenimientos();
+      });
   }
 }

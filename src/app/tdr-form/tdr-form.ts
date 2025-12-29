@@ -112,10 +112,9 @@ export class TdrFormComponent implements OnInit {
       if (tipo === 'tdr') this.archivoTdr = file;
     }
   }
-
-  // --- GUARDADO UNIFICADO ---
+  // --- GUARDADO UNIFICADO (CORREGIDO PARA JSON) ---
   guardarTdr() {
-    // 1. Validaciones
+    // 1. Validaciones básicas
     if (!this.nuevoTdr.numero_tdr || !this.nuevoTdr.objeto_contratacion || !this.nuevoTdr.presupuesto) {
       Swal.fire('Atención', 'Por favor completa los campos obligatorios', 'warning');
       return;
@@ -128,18 +127,25 @@ export class TdrFormComponent implements OnInit {
         return;
     }
 
-    if (this.esEdicion) {
-      // === MODO EDICIÓN (Envío JSON) ===
-      // Nota: Normalmente en edición no re-subimos archivos obligatoriamente, se actualizan textos.
-      const datosUpdate = {
-        ...this.nuevoTdr,
+    // 2. PREPARAR EL JSON (OBJETO LIMPIO)
+    // NOTA: No enviamos archivos aquí. Los archivos se suben en la lista (Botón Lupa)
+    // Esto asegura que el TDR se cree primero en la BD sin errores.
+    const datosParaEnviar = {
+        numero_tdr: this.nuevoTdr.numero_tdr,
+        tipo_proceso: this.nuevoTdr.tipo_proceso,
+        objeto_contratacion: this.nuevoTdr.objeto_contratacion,
         direccion_solicitante: direccionFinal,
-        presupuesto_referencial: this.nuevoTdr.presupuesto, // Ajuste al nombre de BD si es necesario
+        presupuesto_referencial: this.nuevoTdr.presupuesto, // Asegurar coincidencia con BD
+        responsable_designado: this.nuevoTdr.responsable_designado,
+        periodo_contrato: this.nuevoTdr.periodo_contrato,
         fecha_inicio_contrato: this.nuevoTdr.fecha_inicio,
-        fecha_fin_contrato: this.nuevoTdr.fecha_fin
-      };
+        fecha_fin_contrato: this.nuevoTdr.fecha_fin,
+        id_usuario: 1 // O el ID real del usuario logueado si lo tienes
+    };
 
-      this.tdrService.updateTdr(this.idTdrEditar, datosUpdate).subscribe({
+    if (this.esEdicion) {
+      // === MODO EDICIÓN ===
+      this.tdrService.updateTdr(this.idTdrEditar, datosParaEnviar).subscribe({
         next: () => {
           Swal.fire('¡Actualizado!', 'TDR actualizado correctamente', 'success');
           this.router.navigate(['/tdr-lista']);
@@ -148,36 +154,25 @@ export class TdrFormComponent implements OnInit {
       });
 
     } else {
-      // === MODO CREACIÓN (Envío FormData con Archivos) ===
-      const formData = new FormData();
-      formData.append('numero_tdr', this.nuevoTdr.numero_tdr);
-      formData.append('tipo_proceso', this.nuevoTdr.tipo_proceso);
-      formData.append('objeto_contratacion', this.nuevoTdr.objeto_contratacion);
-      formData.append('direccion_solicitante', direccionFinal);
-      formData.append('presupuesto', this.nuevoTdr.presupuesto.toString());
-      formData.append('responsable_designado', this.nuevoTdr.responsable_designado);
-      formData.append('periodo_contrato', this.nuevoTdr.periodo_contrato);
-      formData.append('fecha_inicio', this.nuevoTdr.fecha_inicio);
-      formData.append('fecha_fin', this.nuevoTdr.fecha_fin);
-      formData.append('estado', 'BORRADOR');
-
-      // Archivos
-      if (this.archivoNecesidad) formData.append('archivo_necesidad', this.archivoNecesidad);
-      if (this.archivoTdr) formData.append('archivo_tdr', this.archivoTdr);
-
-      this.tdrService.createTdr(formData).subscribe({
-        next: () => {
-          Swal.fire('¡Éxito!', 'TDR Registrado con éxito', 'success');
-          this.router.navigate(['/tdr-lista']);
+      // === MODO CREACIÓN ===
+      // Usamos createTdr enviando JSON puro, igual que en el Postman
+      this.tdrService.createTdr(datosParaEnviar).subscribe({
+        next: (res: any) => {
+          Swal.fire({
+            title: '¡TDR Creado!',
+            text: 'Ahora puedes subir los archivos PDF desde el listado (Botón Lupa 🔍)',
+            icon: 'success'
+          }).then(() => {
+            this.router.navigate(['/tdr-lista']);
+          });
         },
         error: (err) => {
           console.error(err);
-          Swal.fire('Error', err.error?.message || 'Error al guardar el TDR', 'error');
+          Swal.fire('Error', err.error?.error || 'Error al guardar el TDR', 'error');
         }
       });
     }
   }
-
   cancelar() {
     this.router.navigate(['/tdr-lista']);
   }

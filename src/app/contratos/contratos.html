@@ -6,9 +6,15 @@
             <p style="color: #666; margin: 5px 0 0 0;">Gestión de personal técnico y consultores</p>
         </div>
         
-        <button class="btn-nuevo" *ngIf="esAdmin" (click)="abrirModalCrear()">
-            ➕ Nuevo Contrato
-        </button>
+        <div style="display: flex; gap: 10px;">
+            <button (click)="exportarPDF()" style="background-color: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                📄 Exportar Lista PDF
+            </button>
+
+            <button class="btn-nuevo" *ngIf="esAdmin" (click)="abrirModalCrear()">
+                ➕ Nuevo Contrato
+            </button>
+        </div>
     </div>
 
     <div class="card-table">

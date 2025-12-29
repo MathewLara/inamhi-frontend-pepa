@@ -5,9 +5,15 @@
             <p class="text-muted">Términos de Referencia y Procesos de Contratación</p>
         </div>
         
-        <button class="btn-crear" (click)="abrirModalNuevo()">
-            <i class="fas fa-plus me-2"></i>Nuevo TDR
-        </button>
+        <div style="display: flex; gap: 10px;">
+            <button (click)="exportarReporteGeneral()" style="background-color: #dc3545; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                📄 Exportar Reporte
+            </button>
+
+            <button class="btn-crear" (click)="abrirModalNuevo()">
+                <i class="fas fa-plus me-2"></i>Nuevo TDR
+            </button>
+        </div>
     </div>
 
     <div class="card-tabla">
@@ -40,14 +46,14 @@
                         </td>
                         <td class="acciones-cell">
                             <div style="display: flex; gap: 8px;">
-                                <button (click)="verTdr(item)" title="Ver y Subir Archivos" style="background: #003366; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                                <button (click)="verTdr(item)" title="Ver y Subir Archivos" class="btn-ver">
                                     🔍
                                 </button>
                                 
-                                <button *ngIf="esAdmin" (click)="editarTdr(item)" title="Editar TDR" style="background: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                                <button *ngIf="esAdmin" (click)="editarTdr(item)" title="Editar TDR" style="background: #ffc107; color: black; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer;">
                                     ✏️
                                 </button>
-                                <button *ngIf="esAdmin" (click)="eliminarTdr(item)" title="Eliminar TDR" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                                <button *ngIf="esAdmin" (click)="eliminarTdr(item)" title="Eliminar TDR" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer;">
                                     🗑️
                                 </button>
                             </div>
@@ -62,25 +68,23 @@
     </div>
 </div>
 
-<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
-    <div class="modal-content" (click)="$event.stopPropagation()" style="background: white; width: 95%; max-width: 800px; padding: 0; border-radius: 12px; display: flex; flex-direction: column; max-height: 90vh;">
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()" style="width: 95%; max-width: 800px;">
         
-        <div style="background: #003366; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="margin: 0; font-size: 18px;">
-                {{ esEdicion ? '✏️ Editar TDR' : '📝 Registrar Nuevo TDR' }}
-            </h3>
-            <button (click)="cerrarModal()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">×</button>
+        <div class="modal-header">
+            <h3>{{ esEdicion ? '✏️ Editar TDR' : '📝 Registrar Nuevo TDR' }}</h3>
+            <button class="btn-close-x" (click)="cerrarModal()">×</button>
         </div>
 
-        <div style="padding: 25px; overflow-y: auto;">
+        <div class="modal-body" style="overflow-y: auto; max-height: 70vh;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div>
-                    <label style="font-weight: bold; font-size: 12px; color: #555;">NÚMERO DE TDR:</label>
-                    <input type="text" [(ngModel)]="nuevoTdr.numero_tdr" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <div class="form-group">
+                    <label>NÚMERO DE TDR:</label>
+                    <input type="text" [(ngModel)]="nuevoTdr.numero_tdr" class="input-custom">
                 </div>
-                <div>
-                    <label style="font-weight: bold; font-size: 12px; color: #555;">TIPO PROCESO:</label>
-                    <select [(ngModel)]="nuevoTdr.tipo_proceso" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <div class="form-group">
+                    <label>TIPO PROCESO:</label>
+                    <select [(ngModel)]="nuevoTdr.tipo_proceso" class="input-custom">
                         <option>Ínfima Cuantía</option>
                         <option>Catálogo Electrónico</option>
                         <option>Régimen Especial</option>
@@ -89,14 +93,14 @@
                     </select>
                 </div>
 
-                <div style="grid-column: span 2;">
-                    <label style="font-weight: bold; font-size: 12px; color: #555;">OBJETO DE CONTRATACIÓN:</label>
-                    <textarea [(ngModel)]="nuevoTdr.objeto_contratacion" rows="2" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>OBJETO DE CONTRATACIÓN:</label>
+                    <textarea [(ngModel)]="nuevoTdr.objeto_contratacion" rows="2" class="input-custom"></textarea>
                 </div>
 
-                <div>
-                    <label style="font-weight: bold; font-size: 12px; color: #555;">DIRECCIÓN SOLICITANTE:</label>
-                    <select [(ngModel)]="nuevoTdr.direccion_solicitante" (change)="verificarDireccion()" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <div class="form-group">
+                    <label>DIRECCIÓN SOLICITANTE:</label>
+                    <select [(ngModel)]="nuevoTdr.direccion_solicitante" (change)="verificarDireccion()" class="input-custom">
                         <option value="" disabled selected>-- Seleccione --</option>
                         <option value="TICs (Tecnología)">TICs (Tecnología)</option>
                         <option value="Administrativa Financiera">Administrativa Financiera</option>
@@ -105,55 +109,55 @@
                         <option value="Hidrología">Hidrología</option>
                         <option value="Otras">📍 Otras...</option>
                     </select>
-                    <input *ngIf="mostrarOtraDireccion" type="text" [(ngModel)]="otraDireccionTexto" placeholder="Especifique dirección..." style="width: 100%; margin-top: 5px; padding: 8px; border: 1px solid #007bff; border-radius: 4px;">
+                    <input *ngIf="mostrarOtraDireccion" type="text" [(ngModel)]="otraDireccionTexto" placeholder="Especifique dirección..." class="input-custom" style="margin-top: 5px;">
                 </div>
 
-                <div>
-                    <label style="font-weight: bold; font-size: 12px; color: #555;">PRESUPUESTO ($):</label>
-                    <input type="number" [(ngModel)]="nuevoTdr.presupuesto" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <div class="form-group">
+                    <label>PRESUPUESTO ($):</label>
+                    <input type="number" [(ngModel)]="nuevoTdr.presupuesto" class="input-custom">
                 </div>
 
-                <div>
-                    <label style="font-weight: bold; font-size: 12px; color: #555;">RESPONSABLE:</label>
-                    <input type="text" [(ngModel)]="nuevoTdr.responsable_designado" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <div class="form-group">
+                    <label>RESPONSABLE:</label>
+                    <input type="text" [(ngModel)]="nuevoTdr.responsable_designado" class="input-custom">
                 </div>
-                <div>
-                    <label style="font-weight: bold; font-size: 12px; color: #555;">PERÍODO CONTRATO:</label>
-                    <input type="text" [(ngModel)]="nuevoTdr.periodo_contrato" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <div class="form-group">
+                    <label>PERÍODO CONTRATO:</label>
+                    <input type="text" [(ngModel)]="nuevoTdr.periodo_contrato" class="input-custom">
                 </div>
 
-                <div>
-                    <label style="font-weight: bold; font-size: 12px; color: #555;">FECHA INICIO:</label>
-                    <input type="date" [(ngModel)]="nuevoTdr.fecha_inicio" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <div class="form-group">
+                    <label>FECHA INICIO:</label>
+                    <input type="date" [(ngModel)]="nuevoTdr.fecha_inicio" class="input-custom">
                 </div>
-                <div>
-                    <label style="font-weight: bold; font-size: 12px; color: #dc3545;">FECHA FIN (VENCIMIENTO):</label>
-                    <input type="date" [(ngModel)]="nuevoTdr.fecha_fin" style="width: 100%; padding: 8px; border: 1px solid #dc3545; border-radius: 4px;">
+                <div class="form-group">
+                    <label style="color: #dc3545;">FECHA FIN (VENCIMIENTO):</label>
+                    <input type="date" [(ngModel)]="nuevoTdr.fecha_fin" class="input-custom" style="border-color: #dc3545;">
                 </div>
             </div>
         </div>
 
-        <div style="background: #eee; padding: 15px; text-align: right; border-top: 1px solid #ddd;">
-            <button (click)="cerrarModal()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-right: 10px;">Cancelar</button>
-            <button (click)="guardarTdr()" style="background: #003366; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+        <div class="modal-footer">
+            <button (click)="cerrarModal()" class="btn-cancelar">Cancelar</button>
+            <button (click)="guardarTdr()" class="btn-guardar">
                 {{ esEdicion ? '💾 Actualizar Cambios' : '💾 Guardar TDR' }}
             </button>
         </div>
     </div>
 </div>
 
-<div class="modal-overlay" *ngIf="mostrarModalVer && tdrSeleccionado" (click)="cerrarModalVer()" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
-    <div class="modal-content" (click)="$event.stopPropagation()" style="background: white; width: 95%; max-width: 800px; padding: 0; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
+<div class="modal-overlay" *ngIf="mostrarModalVer && tdrSeleccionado" (click)="cerrarModalVer()">
+    <div class="modal-content" (click)="$event.stopPropagation()" style="width: 95%; max-width: 800px;">
         
-        <div style="background: #003366; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div class="modal-header">
             <div>
-                <h3 style="margin: 0; font-size: 18px;">📄 Ficha Técnica del TDR</h3>
+                <h3 style="margin: 0;">📄 Ficha Técnica del TDR</h3>
                 <span style="font-size: 12px; opacity: 0.8;">{{ tdrSeleccionado.numero_tdr }}</span>
             </div>
-            <button (click)="cerrarModalVer()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;">×</button>
+            <button class="btn-close-x" (click)="cerrarModalVer()">×</button>
         </div>
 
-        <div style="padding: 25px; overflow-y: auto;">
+        <div class="modal-body" style="overflow-y: auto; max-height: 70vh;">
             
             <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 25px;">
                 <h4 style="margin-top: 0; color: #003366; font-size: 14px; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-bottom: 15px;">
@@ -162,19 +166,19 @@
                 
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                     <div style="grid-column: span 2;">
-                        <label style="font-size: 11px; font-weight: bold; color: #666;">OBJETO DE CONTRATACIÓN</label>
-                        <p style="margin: 5px 0; font-size: 14px;">{{ tdrSeleccionado.objeto_contratacion }}</p>
+                        <label class="modal-label">OBJETO DE CONTRATACIÓN</label>
+                        <p class="modal-value">{{ tdrSeleccionado.objeto_contratacion }}</p>
                     </div>
                     <div>
-                        <label style="font-size: 11px; font-weight: bold; color: #666;">PRESUPUESTO</label>
-                        <p style="margin: 5px 0; font-weight: bold; color: #28a745;">${{ (tdrSeleccionado.presupuesto_referencial || 0) | number:'1.2-2' }}</p>
+                        <label class="modal-label">PRESUPUESTO</label>
+                        <p class="modal-value" style="color: #28a745;">${{ (tdrSeleccionado.presupuesto_referencial || 0) | number:'1.2-2' }}</p>
                     </div>
                     <div>
-                        <label style="font-size: 11px; font-weight: bold; color: #666;">DIRECCIÓN</label>
-                        <p style="margin: 5px 0;">{{ tdrSeleccionado.direccion_solicitante || 'No especificada' }}</p>
+                        <label class="modal-label">DIRECCIÓN</label>
+                        <p class="modal-value">{{ tdrSeleccionado.direccion_solicitante || tdrSeleccionado.nombre_direccion || 'No especificada' }}</p>
                     </div>
                     <div>
-                        <label style="font-size: 11px; font-weight: bold; color: #666;">ESTADO</label>
+                        <label class="modal-label">ESTADO</label>
                         <span class="badge" [ngClass]="getClaseBadge(tdrSeleccionado.estado)" style="margin-top: 5px; display: inline-block;">
                             {{ getTextoEstado(tdrSeleccionado.estado) }}
                         </span>
@@ -186,65 +190,56 @@
                 📁 Expediente Digital
             </h4>
 
-            <div class="docs-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div class="cards-grid">
                 
-                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; text-align: center;">
-                    <p style="font-weight: bold; margin-bottom: 10px;">Informe Necesidad</p>
+                <div class="doc-card" [class.active]="tdrSeleccionado.nombre_archivo_necesidad">
+                    <p class="card-title">Informe Necesidad</p>
 
-                    <div *ngIf="tdrSeleccionado.nombre_archivo_necesidad" class="archivo-cargado">
-                        <i class="fas fa-file-pdf text-danger" style="font-size: 30px; margin-bottom: 5px;"></i>
-                        <br>
-                        <small style="display:block; margin-bottom:10px; word-break: break-all; font-weight: bold;">
-                            {{ tdrSeleccionado.nombre_archivo_necesidad }}
-                        </small>
+                    <div *ngIf="tdrSeleccionado.nombre_archivo_necesidad">
+                        <i class="fas fa-file-pdf text-danger" style="font-size: 40px; margin-bottom: 10px;"></i>
+                        <span class="file-name">{{ tdrSeleccionado.nombre_archivo_necesidad }}</span>
                         
-                        <button (click)="descargarArchivo(tdrSeleccionado.ruta_necesidad)" class="btn btn-info btn-sm" style="margin-right: 5px;" title="Ver PDF">
-                            👁️
-                        </button>
-                        
-                        <button *ngIf="esAdmin" (click)="eliminarArchivo(tdrSeleccionado.id_archivo_necesidad)" class="btn btn-danger btn-sm" title="Eliminar">
-                            🗑️
-                        </button>
+                        <div style="margin-top: 10px; display: flex; gap: 5px; justify-content: center;">
+                            <button (click)="descargarArchivo(tdrSeleccionado.ruta_necesidad)" class="btn-ver" title="Ver PDF">👁️</button>
+                            <button *ngIf="esAdmin" (click)="eliminarArchivo(tdrSeleccionado.id_archivo_necesidad)" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer;" title="Eliminar">🗑️</button>
+                        </div>
                     </div>
 
                     <div *ngIf="!tdrSeleccionado.nombre_archivo_necesidad">
-                        <button (click)="triggerUpload('necesidad')" class="btn btn-primary btn-sm" style="background: #003366; color: white; border: none; padding: 6px 15px; border-radius: 4px;">
-                            ⬆️ Subir PDF
-                        </button>
+                        <i class="fas fa-cloud-upload-alt card-icon"></i>
+                        <button class="btn-upload-action">⬆️ Subir PDF</button>
+                        <input type="file" class="hidden-input" accept="application/pdf" (change)="onFileSelected($event, 'necesidad')">
                     </div>
-                    <input type="file" id="file-necesidad" style="display: none;" accept="application/pdf" (change)="onFileSelected($event, 'necesidad')">
                 </div>
 
-                <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; text-align: center;">
-                    <p style="font-weight: bold; margin-bottom: 10px;">Documento TDR</p>
+                <div class="doc-card" [class.active]="tdrSeleccionado.nombre_archivo_tdr">
+                    <p class="card-title">Documento TDR</p>
 
-                    <div *ngIf="tdrSeleccionado.nombre_archivo_tdr" class="archivo-cargado">
-                        <i class="fas fa-file-contract text-primary" style="font-size: 30px; margin-bottom: 5px;"></i>
-                        <br>
-                        <small style="display:block; margin-bottom:10px; word-break: break-all; font-weight: bold;">
-                            {{ tdrSeleccionado.nombre_archivo_tdr }}
-                        </small>
+                    <div *ngIf="tdrSeleccionado.nombre_archivo_tdr">
+                        <i class="fas fa-file-contract text-primary" style="font-size: 40px; margin-bottom: 10px;"></i>
+                        <span class="file-name">{{ tdrSeleccionado.nombre_archivo_tdr }}</span>
                         
-                        <button (click)="descargarArchivo(tdrSeleccionado.ruta_tdr)" class="btn btn-info btn-sm" style="margin-right: 5px;" title="Ver PDF">
-                            👁️
-                        </button>
-                        
-                        <button *ngIf="esAdmin" (click)="eliminarArchivo(tdrSeleccionado.id_archivo_tdr)" class="btn btn-danger btn-sm" title="Eliminar">
-                            🗑️
-                        </button>
+                        <div style="margin-top: 10px; display: flex; gap: 5px; justify-content: center;">
+                            <button (click)="descargarArchivo(tdrSeleccionado.ruta_tdr)" class="btn-ver" title="Ver PDF">👁️</button>
+                            <button *ngIf="esAdmin" (click)="eliminarArchivo(tdrSeleccionado.id_archivo_tdr)" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer;" title="Eliminar">🗑️</button>
+                        </div>
                     </div>
 
                     <div *ngIf="!tdrSeleccionado.nombre_archivo_tdr">
-                        <button (click)="triggerUpload('tdr')" class="btn btn-primary btn-sm" style="background: #003366; color: white; border: none; padding: 6px 15px; border-radius: 4px;">
-                            ⬆️ Subir PDF
-                        </button>
+                        <i class="fas fa-cloud-upload-alt card-icon"></i>
+                        <button class="btn-upload-action">⬆️ Subir PDF</button>
+                        <input type="file" class="hidden-input" accept="application/pdf" (change)="onFileSelected($event, 'tdr')">
                     </div>
-                    <input type="file" id="file-tdr" style="display: none;" accept="application/pdf" (change)="onFileSelected($event, 'tdr')">
                 </div>
             </div>
+        </div>
 
-        <div style="background: #eee; padding: 15px; text-align: right;">
-            <button (click)="cerrarModalVer()" style="background: #555; color: white; border: none; padding: 8px 25px; border-radius: 4px; cursor: pointer;">Cerrar</button>
+        <div class="modal-footer">
+            <button (click)="imprimirFicha()" style="background: #003366; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                🖨️ Imprimir Ficha
+            </button>
+
+            <button (click)="cerrarModalVer()" class="btn-cerrar">Cerrar</button>
         </div>
     </div>
 </div>
